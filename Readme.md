@@ -6,6 +6,9 @@ A API oferece um sistema completo com múltiplas funcionalidades, que vai além 
 
 O sistema foi projetado para refletir a estrutura de um backend de aplicação real, com foco em organização de código, segurança, modularidade e facilidade de escalabilidade.
 
+Inicio - 12/05/2025
+Fim - Desenvolvendo
+
 # Tecnologias Utilizadas
 
 Tecnologia  | Descrição 

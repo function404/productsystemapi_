@@ -6,12 +6,12 @@ const saltRounds = 10
 const JWT_SECRET_KEY = 'functionss'
 
 class UserController {
-   async getUsers(req, res) {
+   async getAllUsers(req, res) {
       try {
          const users = await User.findAll()
          return res.json(users)
       } catch (error) {
-         res.status(500).json('Erro ao buscar usuários!', error)
+         res.status(500).json('Erro ao buscar todos os usuários!', error)
       }
    }
 

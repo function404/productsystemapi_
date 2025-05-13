@@ -5,7 +5,7 @@ const orderController = require('../controllers/orderController')
 // router.use(orderController.validateToken)
 
 router.get('/orders', orderController.getAllOrder)
-// router.get('/users/:id', orderController.getUserById)
+router.get('/orders/:id', orderController.getOrdersById)
 // router.post('/users', orderController.createUsers)
 // router.put('/users/:id', orderController.updateUsers)
 // router.delete('/users/:id', orderController.deleteUsers)
