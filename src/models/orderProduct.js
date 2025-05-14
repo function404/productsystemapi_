@@ -18,6 +18,10 @@ class OrderProduct {
                key: 'id'
             }
          },
+         quantity: {
+            type: database.Sequelize.INTEGER,
+            defaultValue: 1
+         },
          productId: {
             type: database.Sequelize.INTEGER,
             allowNull: false,

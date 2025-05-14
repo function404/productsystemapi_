@@ -1,3 +1,4 @@
+const Category = require('../models/category')
 const Product = require('../models/product')
 
 class productController {
@@ -5,8 +6,8 @@ class productController {
       try {
          const products = await Product.findAll()
          return res.json(products)
-      } catch (err) {
-         res.status(500).json('Erro ao buscar todos os produtos!', err)
+      } catch (error) {
+         res.status(500).json('Erro ao buscar todos os produtos!', error)
       }
    }
 
@@ -19,14 +20,82 @@ class productController {
          }
    
          const product = await Product.findByPk(idProduct)
-   
          if (!product) {
-            return res.status(400).json('Produto não encontrado!')
+            return res.status(404).json('Produto não encontrado!')
          }
    
          return res.json(product)
       } catch (error) {
          res.status(500).json('Erro ao buscar o produto pelo ID!', error)
+      }
+   }
+
+   async createProducts(req, res) {
+      try {
+         const { name, price, quantity, description, categoryId } = req.body
+         if (!name || price == null || !quantity || !description || !categoryId) {
+            return res.status(400).json('Preencha todos os campos!')
+         }
+
+         const category = await Category.findByPk(categoryId)
+         if (!category) {
+            return res.status(404),json('Categoria não encontrada!')
+         }
+
+         const product = await Product.create({ name, price, quantity, description, categoryId})
+         return res.status(201).json(product)
+      } catch (error) {
+         res.status(500).json('Erro ao cadastrar produto!', error)
+      }
+   }
+
+   async updateProducts(req, res) {
+      try {
+         const { id } = Number(req.params.id)
+         const { name, price, quantity, description, categoryId } = req.body
+         if (!name || price == null || !quantity || !description || !categoryId) {
+            return res.status(400).json('Preencha todos os campos!')
+         }
+
+         const product = await Product.findByPk(id)
+         if (!product) {
+            return res.status(404).json('Produto não encontrado!')
+         }
+
+         const category = await Category.findByPk(categoryId)
+         if (!category) {
+            return res.status(404).json('Categoria não encontrada!')
+         }
+
+         product.name = name
+         product.price = price
+         product.quantity = quantity
+         product.description = description
+         product.categoryId = categoryId
+         await product.save()
+
+         return res.json(product)
+      } catch (error) {
+         res.status(500).json('Erro ao atualizar produto!', error)
+      }
+   }
+
+   async deleteProducts(req, res) {
+      try {
+         const id = Number(req.params.id)
+         if (!id) {
+            return res.status(400).json('ID não informado!')
+         }
+
+         const product = await Product.findByPk(id)
+         if (!product) {
+            res.status(404).json('Produto não escontrado!', error)
+         }
+
+         product.destroy()
+         return res.json('Produto deletado com sucesso!')
+      } catch (error) {
+         return res.status(500).json('Erro ao deletar o produto!', error)
       }
    }
 }  

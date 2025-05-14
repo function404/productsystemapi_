@@ -6,10 +6,10 @@ const tokenMiddlewares = require('../middlewares/authToken')
 const categoryController = require('../controllers/categoryController')
 router.use(tokenMiddlewares.validateToken)
 
+router.post('/categories', categoryController.createCategories)
 router.get('/categories', categoryController.getAllCategories)
 router.get('/categories:id', categoryController.getCategoriesById)
-// router.post('/users', categoryController.createUsers)
-// router.put('/users/:id', categoryController.updateUsers)
-// router.delete('/users/:id', categoryController.deleteUsers)
+router.put('/categories/:id', categoryController.updateCategories)
+router.delete('/categories/:id', categoryController.deleteCategories)
 
 module.exports = router

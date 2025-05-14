@@ -6,10 +6,9 @@ const tokenMiddlewares = require('../middlewares/authToken')
 const orderController = require('../controllers/orderController')
 router.use(tokenMiddlewares.validateToken)
 
-router.get('/orders', orderController.getAllOrder)
+router.post('/orders', orderController.createOrders)
+router.get('/orders/user', orderController.getOrderByUser)
 router.get('/orders/:id', orderController.getOrdersById)
-// router.post('/users', orderController.createUsers)
-// router.put('/users/:id', orderController.updateUsers)
-// router.delete('/users/:id', orderController.deleteUsers)
+router.delete('/orders/:id', orderController.deleteUsers)
 
 module.exports = router

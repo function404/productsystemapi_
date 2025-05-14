@@ -24,7 +24,7 @@ app.use('/api', productRoutes)
 app.use('/api', orderRoutes)
 app.use('/api', categoryRoutes)
 
-database.sync({ force: false })
+database.sync({ force: true })
    .then(() => {
       app.listen(Number(port), () => 
          console.log(`🚀 Servidor rodando na porta: ${port}`)
