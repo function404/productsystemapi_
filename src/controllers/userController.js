@@ -1,9 +1,7 @@
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
 
 const saltRounds = 10
-const JWT_SECRET_KEY = 'functionss'
 
 class UserController {
    async getAllUsers(req, res) {
@@ -20,7 +18,7 @@ class UserController {
          const { id } = req.params
          const idUser = Number(id)
          if (!idUser) {
-            return res.status(400).json('ID não informado!')
+            return res.status(400).json('ID do usuário não informado!')
          }
    
          const user = await User.findByPk(idUser)
@@ -111,54 +109,11 @@ class UserController {
          }
 
          user.destroy()
-         return res.status(200).json('Usuário e tarefas associadas deletados com sucesso!')   
+         return res.status(200).json('Usuário deletado com sucesso!')   
       } catch (error) {
          res.status(500).json('Erro ao deletar usuário!', error)
       }
       
-   }
-
-   async login(req, res) {
-      try {
-         const { email, password } = req.body
-         if (!email || !password) {
-            return res.status(400).json('Preencha todos os campos!')
-         }
-
-         const user = await User.findOne({ where: { email} })
-         if (!user) {
-            return res.status(400).json('Usuário não encontrado!')
-         }
-
-         const isPaswordValid = await bcrypt.compare(password, user.password)
-         if (!isPaswordValid) {
-            return res.status(400).json('Senha inválida!')
-         }
-
-         const jwtToken = jwt.sign({ id: user.id }, JWT_SECRET_KEY, { expiresIn: "1h" })
-
-         return res.status(200).json({ token: jwtToken }) 
-      } catch (error) {
-         res.status(500).json('Erro ao fazer login!', error)
-      }
-      
-   }
-
-   async validateToken(req, res, next) {
-      const authHeader = req.headers.authorization
-      const token = authHeader && authHeader.split(' ')[1]
-   
-      if (!token) {
-         return res.status(401).json('Token não enviado!')
-      }
-   
-      try {
-         const payload = jwt.verify(token, JWT_SECRET_KEY)
-         req.user = payload.id
-         next()
-      } catch (error) {
-         return res.status(401).json('Token inválido!', error)
-      }
    }
 }
 

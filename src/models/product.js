@@ -17,6 +17,9 @@ class Product {
             type: database.Sequelize.DECIMAL(10, 2),
             allowNull: false
          },
+         quantity: {
+            type: database.Sequelize.INTEGER
+         },
          categoryId: {
             type: database.Sequelize.INTEGER,
             allowNull: false,
@@ -26,8 +29,6 @@ class Product {
             }
          }
       })
-      this.model.belongsTo(Category, { foreignKey: 'categoryId'})
-      Category.hasMany(this.model, { foreignKey: 'categoryId' })
    }
 }
 

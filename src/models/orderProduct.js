@@ -25,10 +25,6 @@ class OrderProduct {
                model: Product,
                key: 'id'
             }
-         },
-         quantity: {
-            type: database.Sequelize.INTEGER,
-            defaultValue: 1,
          }
       })
 

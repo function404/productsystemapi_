@@ -18,8 +18,6 @@ class Order {
             }
          },
       })
-      this.model.belongsTo(User, { foreignKey: 'userId' })
-      User.hasMany(this.model, { foreignKey: 'userId' })
    }
 }
 

@@ -1,8 +1,10 @@
 const express = require('express')
 const router = express.Router()
 
+const tokenMiddlewares = require('../middlewares/authToken')
+
 const categoryController = require('../controllers/categoryController')
-// router.use(categoryController.validateToken)
+router.use(tokenMiddlewares.validateToken)
 
 router.get('/categories', categoryController.getAllCategories)
 router.get('/categories:id', categoryController.getCategoriesById)

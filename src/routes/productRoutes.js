@@ -1,8 +1,10 @@
 const express = require('express')
 const router = express.Router()
 
+const tokenMiddlewares = require('../middlewares/authToken')
+
 const productController = require('../controllers/productController')
-// router.use(productController.validateToken)
+router.use(tokenMiddlewares.validateToken)
 
 router.get('/products', productController.getAllProducts)
 router.get('/products/:id', productController.getProductsById)
