@@ -9,6 +9,6 @@ router.use(tokenMiddlewares.validateToken)
 router.post('/orders', orderController.createOrders)
 router.get('/orders/user', orderController.getOrderByUser)
 router.get('/orders/:id', orderController.getOrdersById)
-router.delete('/orders/:id', orderController.deleteUsers)
+router.delete('/orders/:id', orderController.cancelOrders)
 
 module.exports = router

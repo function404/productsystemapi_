@@ -46,7 +46,7 @@ class orderController {
          }
 
          const ids = items.map(i => i.productId)
-         const products = await Product.findAll({ where: { id: ids} })
+         const products = await Product.findAll({ where: { id: ids }})
          if (!products.length !== ids.length) {
             return res.status(400).json('Algum produto não foi econtrado!')
          }
