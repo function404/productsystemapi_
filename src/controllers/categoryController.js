@@ -7,7 +7,7 @@ class categoryController {
          const categories = await Category.findAll()
          return res.json(categories)
       } catch (error) {
-         res.status(500).json('Erro ao listar todas as categorias!', error)
+         res.status(500).json({ error:'Erro ao listar todas as categorias!', message: error.message })
       }
    }
 
@@ -26,7 +26,7 @@ class categoryController {
    
          return res.json(category)
       } catch (error) {
-         res.status(500).json('Erro ao listar a categoria pelo ID!', error)
+         res.status(500).json({ error: 'Erro ao listar a categoria pelo ID!', message: error.message })
       }
    }
 
@@ -45,7 +45,7 @@ class categoryController {
          const category = await Category.create({ name })
          res.status(201).json(category)
       } catch (error) {
-         return res.status(500).json('Erro ao criar categoria!', error)
+         return res.status(500).json({ error: 'Erro ao criar categoria!', message: error.message })
       }
    }
 
@@ -69,9 +69,9 @@ class categoryController {
 
          category.name = name
          category.save()
-         return res.json(category)
+         return res.status(200).json(category)
       } catch (error) {
-         return res.status(500).json('Erro ao atualizar categoria!', error)
+         return res.status(500).json({ error: 'Erro ao atualizar categoria!', message: error.message })
       }
    }
 
@@ -82,18 +82,20 @@ class categoryController {
             return res.status(400).json('ID da categoria não informado!')
          }
 
-         const category = await Category.findByPk(id, { include: Product })
+         const category = await Category.findByPk(id)
          if (!category) {
             return res.status(404).json('Categoria não encontrada!')
          }
-         if (category.products && category.products.length > 0) {
+
+         const product = await Product.findAll({ where: { categoryId: id }})
+         if (product.length > 0) {
             return res.status(400).json('Categoria com produtos associados não pode ser excluída!')
          }
 
-         category.destroy()
+         await category.destroy()
          return res.json('Categoria deleta com sucesso!')
       } catch (error) {
-         return res.status(500).json('Erro ao deletar categoria!', error)
+         return res.status(500).json({ error: 'Erro ao deletar categoria!', message: error.message })
       }
    }
 }

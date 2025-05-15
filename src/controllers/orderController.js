@@ -1,28 +1,40 @@
+require('../models/orderProduct')
 const Order = require('../models/order')
 const OrderProduct = require('../models/orderProduct')
 const Product = require('../models/product')
+const User = require('../models/user')
 
 class orderController {
    async getOrderByUser(req, res){
       try {
          const userId = req.user
-         const orders = await Order.findAll({ where: { userId }})
+         const orders = await Order.findAll({ where: { userId },
+            include: {
+               model: Product,
+               through: { attributes: ['quantity'] }
+            }
+         })
 
          return res.json(orders)
       } catch (error) {
-         res.status(500).json('Erro ao buscar todos os pedidos do usuário!', error)
+         res.status(500).json({ error:'Erro ao buscar todos os pedidos do usuário!', message: error.message })
       }
    }
 
    async getOrdersById(req, res) {
       try {
-         const { id } = Number(req.params.id)
+         const id = Number(req.params.id)
          const userId = req.user
          if (!id) {
             return res.status(400).json('ID do pedido não informado!')
          }
    
-         const order = await Order.findByPk(id)
+         const order = await Order.findByPk(id, {
+            include: {
+               model: Product,
+               through: { attributes: ['quantity'] }
+            }
+         })
          if (!order) {
             return res.status(400).json('Pedido não encontrado!')
          }
@@ -32,61 +44,112 @@ class orderController {
    
          return res.json(order)
       } catch (error) {
-         res.status(500).json('Erro ao buscar o pedido pelo ID!', error)
+         res.status(500).json({ error:'Erro ao buscar o pedido pelo ID!', message: error.message})
       }
    }
 
    async createOrders(req, res) {
       try {
-         const userId = req.body
+         const userId = req.user
          const items = req.body.products
 
          if (!Array.isArray(items) || items.length === 0) {
             return res.status(400).json('Envie a lista de produtos e quantidades!')
          }
 
-         const ids = items.map(i => i.productId)
-         const products = await Product.findAll({ where: { id: ids }})
-         if (!products.length !== ids.length) {
-            return res.status(400).json('Algum produto não foi econtrado!')
+         const user = await User.findByPk(userId)
+         if (!user) {
+            return res.status(404).json('Usuário não encontrado!')
          }
+
+         const productIds = items.map((i) => i.productId)
+         const checkDuplicateProducts = new Set(productIds)
+         if (checkDuplicateProducts.size !== productIds.length) {
+            return res.status(400).json('Não envie produtos repetidos!')
+         }
+
+         const products = await Product.findAll({ where: { id: productIds } })
+         if (products.length !== productIds.length) {
+            return res.status(400).json('Um ou mais produtos não foram encontrados!')
+         }
+         
+         await Promise.all(items.map(async (item) => {
+            const product = products.find(p => p.id === item.productId)
+            const quantityRequested = item.quantity || 1
+
+            if (!product) {
+               throw new Error(`Produto não encontrado: ID ${item.productId}`)
+            }
+
+            if (product.quantity < quantityRequested) {
+               throw new Error(`Estoque insuficiente para o produto: ${product.name}`)
+            }
+         }))
 
          const order = await Order.create({ userId })
 
-         const orderProducts = items.map(i => ({
+         const orderProducts = items.map((i) => ({
             orderId: order.id,
             productId: i.productId,
-            quantity:  i.quantity || 1
+            quantity: i.quantity || 1,
          }))
          await OrderProduct.bulkCreate(orderProducts)
 
-         const completeOrder = await Order.findByPk(order.id)
-         return res.status(201).json(completeOrder)
+         await Promise.All(items.map(async (item) => {
+            const product = products.find(p => p.id === item.productId)
+            product.quantity -= item.quantity || 1
+            await product.save()
+         }))
+
+         const createdOrder = await Order.findByPk(order.id, {
+            include: {
+               model: Product,
+               through: {
+                  attributes: ['quantity']
+               }
+            }
+         })
+
+         return res.status(201).json(createdOrder)
       } catch (error) {
-         return res.status(500).json('Erro ao criar o pedido!', error)
+         return res.status(500).json({ error: 'Erro ao criar o pedido!', message: error.message })
       }
    }
 
    async cancelOrders(req, res) {
       try {
-         const id = Number(req.params.id)
+         const { id } = req.params
+         const idOrder = Number(id)
          const userId = req.user
-         if (!id) {
+         if (!idOrder) {
             res.status(404).json('ID do pedido não informado!')
          }
 
-         const order = await Order.findByPk(id)
+         const order = await Order.findByPk(idOrder, {
+            include: {
+               model: Product,
+               through: { attributes: ['quantity'] }
+            }
+         })
          if (!order) {
             return res.status(404).json('Pedido não encontrado!')
          }
          if (order.userId !== userId) {
             return res.status(403).json('Usuário não autorizado para ver esse pedido!')
          }
-         
-         order.destroy()
-         return res.json('Pedido cancelado com successo!')
+
+         await Promise.all(order.products.map(async (product) => {
+            const quantityOrder = product.order_products.quantity
+            product.quantity += quantityOrder
+            await product.save()
+         }))
+
+         await OrderProduct.destroy({ where: { orderId: order.id }})         
+         await order.destroy()
+
+         return res.status(200).json('Pedido cancelado com successo!')
       } catch (error) {
-         res.status(500).json('Erro ao cancelar o pedido!', error)
+         res.status(500).json({ error:'Erro ao cancelar o pedido!', message: error.message })
       }
    }
 }

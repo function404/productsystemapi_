@@ -9,7 +9,7 @@ class UserController {
          const users = await User.findAll()
          return res.json(users)
       } catch (error) {
-         res.status(500).json('Erro ao buscar todos os usuários!', error)
+         res.status(500).json({ error:'Erro ao buscar todos os usuários!', message: error.message })
       }
    }
 
@@ -24,19 +24,18 @@ class UserController {
          const user = await User.findByPk(idUser)
    
          if (!user) {
-            return res.status(400).json('Usuário não encontrado!')
+            return res.status(404).json('Usuário não encontrado!')
          }
    
          return res.json(user)
       } catch (error) {
-         res.status(500).json('Erro ao buscar usuário por ID!', error)
+         res.status(500).json({ error:'Erro ao buscar usuário por ID!', message: error.message })
       }
    }
 
    async createUsers(req, res) {
       try {
          const { name, email, password } = req.body
-   
          if ( !name || !email || !password) {
             return res.status(400).json('Preencha todos os campos!')
          }
@@ -53,7 +52,7 @@ class UserController {
    
          return res.json(user)
       } catch (error) {
-         res.status(500).json('Erro ao criar usuário!', error)
+         res.status(500).json({ error:'Erro ao criar usuário!', message: error.message })
       }
    }
 
@@ -61,8 +60,11 @@ class UserController {
       try {
          const { id } = req.params
          const { name, email, password } = req.body
-         const idUser = Number(id)
-         if ( !idUser || !name || !email || !password) {
+         const idUser = Number(id) 
+         if (!idUser) {
+            return res.status(400).json('ID do usuário não informado!')
+         }
+         if (!name || !email || !password) {
             return res.status(400).json('Preencha todos os campos!')
          }
 
@@ -86,9 +88,8 @@ class UserController {
 
          return res.status(200).json(user)  
       } catch (error) {
-         res.status(500).json('Erro ao atualizar usuário!', error)
+         res.status(500).json('Erro ao atualizar usuário!', error.message)
       }
-      
    }
 
    async deleteUsers(req, res) {
@@ -96,7 +97,7 @@ class UserController {
          const { id } = req.params
          const idUser = Number(id)
          if (!idUser) {
-            return res.status(404).json('ID não informado!')
+            return res.status(400).json('ID não informado!')
          }
          
          const user = await User.findByPk(idUser)
@@ -111,9 +112,8 @@ class UserController {
          user.destroy()
          return res.status(200).json('Usuário deletado com sucesso!')   
       } catch (error) {
-         res.status(500).json('Erro ao deletar usuário!', error)
+         res.status(500).json('Erro ao deletar usuário!', error.message)
       }
-      
    }
 }
 

@@ -7,7 +7,7 @@ class productController {
          const products = await Product.findAll()
          return res.json(products)
       } catch (error) {
-         res.status(500).json('Erro ao buscar todos os produtos!', error)
+         res.status(500).json({ error:'Erro ao buscar todos os produtos!', message: error.message })
       }
    }
 
@@ -26,7 +26,7 @@ class productController {
    
          return res.json(product)
       } catch (error) {
-         res.status(500).json('Erro ao buscar o produto pelo ID!', error)
+         res.status(500).json({ error: 'Erro ao buscar o produto pelo ID!', message: error.message })
       }
    }
 
@@ -37,23 +37,28 @@ class productController {
             return res.status(400).json('Preencha todos os campos!')
          }
 
+         const existingProduct = await Product.findOne({ where: { name }})
+         if (existingProduct) {
+            return res.status(400).json('Produto com esse nome já existe!')
+         }
+
          const category = await Category.findByPk(categoryId)
          if (!category) {
-            return res.status(404),json('Categoria não encontrada!')
+            return res.status(404).json('Categoria não encontrada!')
          }
 
          const product = await Product.create({ name, price, quantity, description, categoryId})
          return res.status(201).json(product)
       } catch (error) {
-         res.status(500).json('Erro ao cadastrar produto!', error)
+         res.status(500).json({ error:'Erro ao cadastrar produto!', message: error.message })
       }
    }
 
    async updateProducts(req, res) {
       try {
-         const { id } = Number(req.params.id)
+         const id = Number(req.params.id)
          const { name, price, quantity, description, categoryId } = req.body
-         if (!name || price == null || !quantity || !description || !categoryId) {
+         if (!id || !name || !price || quantity == null || !categoryId) {
             return res.status(400).json('Preencha todos os campos!')
          }
 
@@ -76,7 +81,7 @@ class productController {
 
          return res.json(product)
       } catch (error) {
-         res.status(500).json('Erro ao atualizar produto!', error)
+         return res.status(500).json({ error:'Erro ao atualizar produto!', message: error.message })
       }
    }
 
@@ -89,13 +94,13 @@ class productController {
 
          const product = await Product.findByPk(id)
          if (!product) {
-            res.status(404).json('Produto não escontrado!', error)
+            res.status(404).json('Produto não escontrado!')
          }
 
          product.destroy()
          return res.json('Produto deletado com sucesso!')
       } catch (error) {
-         return res.status(500).json('Erro ao deletar o produto!', error)
+         return res.status(500).json({ error:'Erro ao deletar o produto!', message: error.message })
       }
    }
 }  

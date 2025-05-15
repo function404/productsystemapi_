@@ -18,7 +18,7 @@ class authLogin {
 
          const isPaswordValid = await bcrypt.compare(password, user.password)
          if (!isPaswordValid) {
-            return res.status(400).json('Senha inválida!')
+            return res.status(401).json('Senha inválida!')
          }
 
          const jwtToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" })

@@ -11,11 +11,10 @@ class Product {
          },
          name: {
             type: database.Sequelize.STRING,
-            allowNull: false
+            unique: true,
          },
          price: {
             type: database.Sequelize.DECIMAL(10, 2),
-            allowNull: false
          },
          quantity: {
             type: database.Sequelize.INTEGER
@@ -25,7 +24,6 @@ class Product {
          },
          categoryId: {
             type: database.Sequelize.INTEGER,
-            allowNull: false,
             references: {
                model: Category,
                key: 'id',

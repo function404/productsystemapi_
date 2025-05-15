@@ -10,6 +10,10 @@ class OrderProduct {
             primaryKey: true,
             autoIncrement: true
          },
+         quantity: {
+            type: database.Sequelize.INTEGER,
+            defaultValue: 1
+         },
          orderId: {
             type: database.Sequelize.INTEGER,
             allowNull: false,
@@ -17,10 +21,6 @@ class OrderProduct {
                model: Order,
                key: 'id'
             }
-         },
-         quantity: {
-            type: database.Sequelize.INTEGER,
-            defaultValue: 1
          },
          productId: {
             type: database.Sequelize.INTEGER,
@@ -39,8 +39,8 @@ class OrderProduct {
       })
       Product.belongsToMany(Order, {
          through: this.model,
-         foreignKey: 'orderId',
-         otherKey: 'productId',
+         foreignKey: 'productId',
+         otherKey: 'orderId',
       })
    }
 }

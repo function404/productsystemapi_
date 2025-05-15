@@ -8,7 +8,7 @@ router.use(tokenMiddlewares.validateToken)
 
 router.post('/categories', categoryController.createCategories)
 router.get('/categories', categoryController.getAllCategories)
-router.get('/categories:id', categoryController.getCategoriesById)
+router.get('/categories/:id', categoryController.getCategoriesById)
 router.put('/categories/:id', categoryController.updateCategories)
 router.delete('/categories/:id', categoryController.deleteCategories)
 

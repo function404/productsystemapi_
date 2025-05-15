@@ -10,6 +10,7 @@ class Category {
          },
          name: {
             type: database.Sequelize.STRING,
+            unique: true
          }
       })
    }
