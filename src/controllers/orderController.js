@@ -36,7 +36,7 @@ class orderController {
             }
          })
          if (!order) {
-            return res.status(400).json('Pedido não encontrado!')
+            return res.status(404).json('Pedido não encontrado!')
          }
          if (order.userId !== userId) {
             return res.status(403).json('Usuário não autorizado para ver esse pedido!')
@@ -63,23 +63,22 @@ class orderController {
          }
 
          const productIds = items.map((i) => i.productId)
+         const products = await Product.findAll({ where: { id: productIds }})
+         
          const checkDuplicateProducts = new Set(productIds)
          if (checkDuplicateProducts.size !== productIds.length) {
             return res.status(400).json('Não envie produtos repetidos!')
          }
 
-         const products = await Product.findAll({ where: { id: productIds }})
-         if (products.length !== productIds.length) {
-            return res.status(400).json('Um ou mais produtos não foram encontrados!')
+         const foundIds = products.map((p) => p.id)
+         const notFoundsIds = productIds.filter(id => !foundIds.includes(id))
+         if (notFoundsIds.length > 0) {
+            return res.status(404).json({error:`Produto(s) não encontrado(s): ID ${notFoundsIds.join(', ')}.`})
          }
          
          await Promise.all(items.map(async (item) => {
             const product = products.find(p => p.id === item.productId)
             const quantityRequested = item.quantity || 1
-
-            if (!product) {
-               throw new Error(`Produto não encontrado: ID ${item.productId}`)
-            }
 
             if (product.quantity < quantityRequested) {
                throw new Error(`Estoque insuficiente para o produto: ${product.name}`)
@@ -122,7 +121,7 @@ class orderController {
          const idOrder = Number(id)
          const userId = req.user
          if (!idOrder) {
-            res.status(404).json('ID do pedido não informado!')
+            res.status(400).json('ID do pedido não informado!')
          }
 
          const order = await Order.findByPk(idOrder, {
@@ -135,7 +134,7 @@ class orderController {
             return res.status(404).json('Pedido não encontrado!')
          }
          if (order.userId !== userId) {
-            return res.status(403).json('Usuário não autorizado para ver esse pedido!')
+            return res.status(403).json('Usuário não autorizado para deletar esse pedido!')
          }
 
          await Promise.all(order.products.map(async (product) => {

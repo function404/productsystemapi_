@@ -11,7 +11,6 @@ class Order {
          },
          userId: {
             type: database.Sequelize.INTEGER,
-            allowNull: false,
             references: {
                model: User,
                key: 'id'

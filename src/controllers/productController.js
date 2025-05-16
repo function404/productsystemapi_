@@ -44,13 +44,13 @@ class productController {
 
          const category = await Category.findByPk(categoryId)
          if (!category) {
-            return res.status(404).json('Categoria não encontrada!')
+            return res.status(404).json('ID da categoria não encontrada!')
          }
 
          const product = await Product.create({ name, price, quantity, description, categoryId})
          return res.status(201).json(product)
       } catch (error) {
-         res.status(500).json({ error:'Erro ao cadastrar produto!', message: error.message })
+         res.status(500).json({ error:'Erro ao criar produto!', message: error.message })
       }
    }
 
@@ -69,7 +69,7 @@ class productController {
 
          const category = await Category.findByPk(categoryId)
          if (!category) {
-            return res.status(404).json('Categoria não encontrada!')
+            return res.status(404).json('ID da categoria não encontrada')
          }
 
          product.name = name
@@ -89,7 +89,7 @@ class productController {
       try {
          const id = Number(req.params.id)
          if (!id) {
-            return res.status(400).json('ID não informado!')
+            return res.status(400).json('ID do produto não informado!')
          }
 
          const product = await Product.findByPk(id)

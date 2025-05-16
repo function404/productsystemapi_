@@ -84,7 +84,7 @@ class UserController {
 
          const encryptedPassword = await bcrypt.hash(password, saltRounds)
          user.password = encryptedPassword
-         user.save()
+         await user.save()
 
          return res.status(200).json(user)  
       } catch (error) {
@@ -97,7 +97,7 @@ class UserController {
          const { id } = req.params
          const idUser = Number(id)
          if (!idUser) {
-            return res.status(400).json('ID não informado!')
+            return res.status(400).json('ID do usuário não informado!')
          }
          
          const user = await User.findByPk(idUser)
