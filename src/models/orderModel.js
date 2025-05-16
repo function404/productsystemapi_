@@ -1,5 +1,5 @@
 const database = require('../config/database')
-const User = require('./user')
+const User = require('./userModel')
 
 class Order {
    constructor() {

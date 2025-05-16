@@ -1,5 +1,5 @@
 const database = require('../config/database')
-const Category = require('./category')
+const Category = require('./categoryModel')
 
 class Product {
    constructor() {

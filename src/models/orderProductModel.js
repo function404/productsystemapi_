@@ -1,6 +1,6 @@
 const database = require('../config/database')
-const Order = require('./order')
-const Product = require('./product')
+const Order = require('./orderModel')
+const Product = require('./productModel')
 
 class OrderProduct {
    constructor() {

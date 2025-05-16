@@ -1,8 +1,8 @@
-require('../models/orderProduct')
-const Order = require('../models/order')
-const OrderProduct = require('../models/orderProduct')
-const Product = require('../models/product')
-const User = require('../models/user')
+require('../models/orderProductModel')
+const Order = require('../models/orderModel')
+const OrderProduct = require('../models/orderProductModel')
+const Product = require('../models/productModel')
+const User = require('../models/userModel')
 
 class orderController {
    async getOrderByUser(req, res){

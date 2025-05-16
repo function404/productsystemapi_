@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const tokenMiddlewares = require('../middlewares/authToken')
+const tokenMiddlewares = require('../middlewares/tokenMiddleware')
 
 const categoryController = require('../controllers/categoryController')
 router.use(tokenMiddlewares.validateToken)

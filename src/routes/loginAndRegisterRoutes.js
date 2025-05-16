@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
-const registerMiddlewares = require('../middlewares/authRegister')
-const loginMiddlewares = require('../middlewares/authLogin')
+const registerMiddlewares = require('../middlewares/registerMiddleware')
+const loginMiddlewares = require('../middlewares/loginMiddleware')
 
 /**
  * @swagger

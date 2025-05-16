@@ -6,7 +6,7 @@ const database = require('./config/database')
 
 const swaggerOpt = require('./docs/swagger')
 
-require('./models/orderProduct')
+require('./models/orderProductModel')
 const userRoutes = require('./routes/userRoutes')
 const loginAndRegister = require('./routes/loginAndRegisterRoutes')
 const productRoutes = require('./routes/productRoutes')
@@ -27,7 +27,7 @@ app.use('/api', productRoutes)
 app.use('/api', orderRoutes)
 app.use('/api', categoryRoutes)
 
-database.sync({ force: true })
+database.sync({ force: false })
    .then(() => {
       app.listen(Number(port), () => 
          console.log(`🚀 Servidor rodando na porta: ${port}`)
