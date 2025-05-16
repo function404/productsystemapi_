@@ -68,7 +68,7 @@ class orderController {
             return res.status(400).json('Não envie produtos repetidos!')
          }
 
-         const products = await Product.findAll({ where: { id: productIds } })
+         const products = await Product.findAll({ where: { id: productIds }})
          if (products.length !== productIds.length) {
             return res.status(400).json('Um ou mais produtos não foram encontrados!')
          }
@@ -95,7 +95,7 @@ class orderController {
          }))
          await OrderProduct.bulkCreate(orderProducts)
 
-         await Promise.All(items.map(async (item) => {
+         await Promise.all(items.map(async (item) => {
             const product = products.find(p => p.id === item.productId)
             product.quantity -= item.quantity || 1
             await product.save()

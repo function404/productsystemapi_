@@ -13,8 +13,8 @@ const options = {
             url: 'https://localhost:3001',
          }
       ],
-      apis: ['./src/routes/*.js']
-   }
+   },
+   apis: ['./src/routes/*.js']
 }
 
 const swaggerOpt = swaggerJSDoc(options)

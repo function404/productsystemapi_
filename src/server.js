@@ -1,4 +1,5 @@
 const express = require('express')
+const swaggerUi = require('swagger-ui-express')
 require('dotenv').config()
 
 const database = require('./config/database')
@@ -11,11 +12,14 @@ const userRoutes = require('./routes/userRoutes')
 const productRoutes = require('./routes/productRoutes')
 const orderRoutes = require('./routes/orderRoutes')
 const categoryRoutes = require('./routes/categoryRoutes')
+const swaggerOpt = require('./docs/swagger')
 
 const port = process.env.API_PORT || 3001
 
 const app = express()
 app.use(express.json())
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerOpt))
 
 app.post('/login', loginMiddlewares.login)
 app.post('/register', registerMiddlewares.register)
@@ -25,7 +29,7 @@ app.use('/api', productRoutes)
 app.use('/api', orderRoutes)
 app.use('/api', categoryRoutes)
 
-database.sync({ force: true })
+database.sync({ force: false })
    .then(() => {
       app.listen(Number(port), () => 
          console.log(`🚀 Servidor rodando na porta: ${port}`)
