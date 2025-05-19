@@ -4,6 +4,8 @@ const OrderProduct = require('../models/orderProductModel')
 const Product = require('../models/productModel')
 const User = require('../models/userModel')
 
+const { buildLinks } = require('../utils/linksHelper')
+
 class orderController {
    async getOrderByUser(req, res){
       try {
@@ -14,8 +16,31 @@ class orderController {
                through: { attributes: ['quantity'] }
             }
          })
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         // Aqui eu precisei sobrescrever o link pra garantir que a lista apareça /orders/user 
+         // Mostrando que para obter todos os pedidos por usuário a url precisa ser /orders/user
+         const result = orders.map(order => {
+            const links = buildLinks(baseUrl, 'orders', order.id)
 
-         return res.json(orders)
+            links.list = {
+               href: `${baseUrl}/orders/user`,
+               method: 'GET'
+            }
+
+            return {
+               order,
+               _links: links
+            }
+         })
+
+         return res.status(200).json({
+            count: result.length,
+            result,
+            _links: {
+               self: { href: `${baseUrl}/orders/user`, method: 'GET' },
+               create: { href: `${baseUrl}/orders`, method: 'POST' },
+            }
+         })
       } catch (error) {
          res.status(500).json({ error:'Erro ao buscar todos os pedidos do usuário!', message: error.message })
       }
@@ -42,7 +67,16 @@ class orderController {
             return res.status(403).json('Usuário não autorizado para ver esse pedido!')
          }
    
-         return res.json(order)
+         // Aqui fiz a mesma coisa, sobrescrevi o list pra orders/user tambem
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+
+         const links = buildLinks(baseUrl, 'orders', order.id)
+         links.list = {href: `${baseUrl}/order/user`, method: 'GET' }
+
+         return res.status(200).json({
+            order,
+            _links: links
+         })
       } catch (error) {
          res.status(500).json({ error:'Erro ao buscar o pedido pelo ID!', message: error.message})
       }
@@ -109,7 +143,16 @@ class orderController {
             }
          })
 
-         return res.status(201).json(createdOrder)
+         // Aqui fiz a mesma coisa, sobrescrevi o list pra orders/user tambem
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+
+         const links = buildLinks(baseUrl, 'orders', order.id)
+         links.list = { href: `${baseUrl}/order/user`, method: 'GET' }
+
+         return res.status(201).json({
+            order: createdOrder,
+            _links: links
+         })
       } catch (error) {
          return res.status(500).json({ error: 'Erro ao criar o pedido!', message: error.message })
       }
@@ -146,7 +189,11 @@ class orderController {
          await OrderProduct.destroy({ where: { orderId: order.id }})         
          await order.destroy()
 
-         return res.status(200).json('Pedido cancelado com successo!')
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         return res.status(200).json({
+            message: 'Pedido cancelado com sucesso!',
+            _links: buildLinks(baseUrl, 'orders')
+         })
       } catch (error) {
          res.status(500).json({ error:'Erro ao cancelar o pedido!', message: error.message })
       }

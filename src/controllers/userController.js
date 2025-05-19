@@ -1,13 +1,26 @@
 const User = require('../models/userModel')
 const bcrypt = require('bcrypt')
 
+const { buildLinks } = require('../utils/linksHelper')
+
 const saltRounds = 10
 
 class UserController {
    async getAllUsers(req, res) {
       try {
          const users = await User.findAll()
-         return res.json(users)
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+
+         const result = users.map(u => ({
+            user: u,
+            _links:  buildLinks(baseUrl, 'users', u.id)
+         }))
+
+         return res.status(200).json({
+            count: users.length,
+            items: result,
+            _links: buildLinks(baseUrl, 'users')
+         })
       } catch (error) {
          res.status(500).json({ error:'Erro ao buscar todos os usuários!', message: error.message })
       }
@@ -27,7 +40,11 @@ class UserController {
             return res.status(404).json('Usuário não encontrado!')
          }
    
-         return res.json(user)
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         return res.status(200).json({
+            user,
+            _links: buildLinks(baseUrl, 'users', user.id)
+         })
       } catch (error) {
          res.status(500).json({ error:'Erro ao buscar usuário por ID!', message: error.message })
       }
@@ -50,7 +67,11 @@ class UserController {
          const user = await User
             .create({ name, email, password: encryptedPassword })
    
-         return res.json(user)
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         return res.status(201).json({
+            user,
+            _links: buildLinks(baseUrl, 'users', user.id)
+         })
       } catch (error) {
          res.status(500).json({ error:'Erro ao criar usuário!', message: error.message })
       }
@@ -86,7 +107,11 @@ class UserController {
          user.password = encryptedPassword
          await user.save()
 
-         return res.status(200).json(user)  
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         return res.status(200).json({
+            user,
+            _links: buildLinks(baseUrl, 'users', user.id)
+         })
       } catch (error) {
          res.status(500).json('Erro ao atualizar usuário!', error.message)
       }
@@ -109,8 +134,13 @@ class UserController {
             return res.status(400).json('Você não pode deletar sua própria conta!')
          }
 
-         user.destroy()
-         return res.status(200).json('Usuário deletado com sucesso!')   
+         await user.destroy()
+         
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         return res.status(200).json({
+            message: 'Usuário deletado com sucesso!',
+            _links: buildLinks(baseUrl, 'users')
+         })
       } catch (error) {
          res.status(500).json('Erro ao deletar usuário!', error.message)
       }
