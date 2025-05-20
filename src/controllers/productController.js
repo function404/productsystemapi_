@@ -1,11 +1,24 @@
 const Category = require('../models/categoryModel')
 const Product = require('../models/productModel')
 
+const { buildLinks } = require('../utils/linksHelper')
+
 class productController {
    async getAllProducts(req, res) {
       try {
          const products = await Product.findAll()
-         return res.json(products)
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         
+         const result = products.map(p => ({
+            product: p,
+            _links: buildLinks(baseUrl, 'products', p.id)
+         }))
+         
+         return res.status(200).json({
+            count: products.length,
+            items: result,
+            _links: buildLinks(baseUrl, 'products')
+         })
       } catch (error) {
          res.status(500).json({ error:'Erro ao buscar todos os produtos!', message: error.message })
       }
@@ -23,8 +36,12 @@ class productController {
          if (!product) {
             return res.status(404).json('Produto não encontrado!')
          }
-   
-         return res.json(product)
+         
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         return res.status(200).json({
+            product,
+            _links: buildLinks(baseUrl, 'products', product.id)
+         })
       } catch (error) {
          res.status(500).json({ error: 'Erro ao buscar o produto pelo ID!', message: error.message })
       }
@@ -47,8 +64,13 @@ class productController {
             return res.status(404).json('ID da categoria não encontrada!')
          }
 
-         const product = await Product.create({ name, price, quantity, description, categoryId})
-         return res.status(201).json(product)
+         const product = await Product.create({ name, price, quantity, description, categoryId })
+         
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         return res.status(201).json({
+            product,
+            _links: buildLinks(baseUrl, 'products', product.id)
+         })
       } catch (error) {
          res.status(500).json({ error:'Erro ao criar produto!', message: error.message })
       }
@@ -79,7 +101,11 @@ class productController {
          product.categoryId = categoryId
          await product.save()
 
-         return res.json(product)
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         return res.status(200).json({
+            product,
+            _links: buildLinks(baseUrl, 'categories', category.id)
+         })
       } catch (error) {
          return res.status(500).json({ error:'Erro ao atualizar produto!', message: error.message })
       }
@@ -97,9 +123,14 @@ class productController {
             res.status(404).json('Produto não escontrado!')
          }
 
-         product.destroy()
-         return res.json('Produto deletado com sucesso!')
-      } catch (error) {
+         await product.destroy()
+
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         return res.status(200).json({
+            message: 'Produto deletado com sucesso!',
+            _links: buildLinks(baseUrl, 'products')
+         })
+         } catch (error) {
          return res.status(500).json({ error:'Erro ao deletar o produto!', message: error.message })
       }
    }

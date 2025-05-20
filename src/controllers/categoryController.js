@@ -1,11 +1,24 @@
 const Category = require('../models/categoryModel')
-const Product  = require('../models/productModel');
+const Product  = require('../models/productModel')
+
+const { buildLinks } = require('../utils/linksHelper')
 
 class categoryController {
    async getAllCategories(req, res) {
       try {
          const categories = await Category.findAll()
-         return res.json(categories)
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+
+         const result = categories.map(c => ({
+            category: c,
+            _links:  buildLinks(baseUrl, 'categories', c.id)
+         }))
+
+         return res.status(200).json({
+            count: categories.length,
+            items: result,
+            _links: buildLinks(baseUrl, 'categories')
+         })
       } catch (error) {
          res.status(500).json({ error:'Erro ao listar todas as categorias!', message: error.message })
       }
@@ -23,8 +36,12 @@ class categoryController {
          if (!category) {
             return res.status(400).json('Categoria não encontrada!')
          }
-   
-         return res.json(category)
+
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         return res.status(200).json({
+            category,
+            _links: buildLinks(baseUrl, 'categories', category.id)
+         })
       } catch (error) {
          res.status(500).json({ error: 'Erro ao listar a categoria pelo ID!', message: error.message })
       }
@@ -43,7 +60,12 @@ class categoryController {
          }
    
          const category = await Category.create({ name })
-         res.status(201).json(category)
+
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         return res.status(201).json({
+            category,
+            _links: buildLinks(baseUrl, 'categories', category)
+         })
       } catch (error) {
          return res.status(500).json({ error: 'Erro ao criar categoria!', message: error.message })
       }
@@ -68,8 +90,13 @@ class categoryController {
          }
 
          category.name = name
-         category.save()
-         return res.status(200).json(category)
+         await category.save()
+
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         return res.status(200).json({
+            category,
+            _links: buildLinks(baseUrl, 'categories', category.id)
+         })
       } catch (error) {
          return res.status(500).json({ error: 'Erro ao atualizar categoria!', message: error.message })
       }
@@ -93,7 +120,12 @@ class categoryController {
          }
 
          await category.destroy()
-         return res.json('Categoria deleta com sucesso!')
+
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+         return res.status(200).json({
+            message: 'Categoria deletada com sucesso!',
+            _links: buildLinks(baseUrl, 'categories')
+         })
       } catch (error) {
          return res.status(500).json({ error: 'Erro ao deletar categoria!', message: error.message })
       }

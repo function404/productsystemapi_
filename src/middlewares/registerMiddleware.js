@@ -18,11 +18,19 @@ class authRegister {
          }
    
          const encryptedPassword = await bcrypt.hash(password, saltRounds)
-   
          const user = await User
             .create({ name, email, password: encryptedPassword })
-   
-         return res.json(user)
+
+         const baseUrl = `${req.protocol}://${req.get('host')}/api`
+
+         return res.status(201).json({
+            user,
+            _links: {
+               self: { href: `${baseUrl}/register`, method: 'POST' },
+               login: { href: `${baseUrl}/login`, method: 'POST' },
+               docs: { href: `${baseUrl}/docs`, method: 'GET' },
+            }
+         })
       } catch (error) {
          res.status(500).json('Erro ao criar usuário!', error)
       }
