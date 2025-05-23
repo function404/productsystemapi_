@@ -19,7 +19,6 @@ class UserController {
          return res.status(200).json({
             count: users.length,
             items: result,
-            _links: buildLinks(baseUrl, 'users')
          })
       } catch (error) {
          res.status(500).json({ error:'Erro ao buscar todos os usuários!', message: error.message })
@@ -139,7 +138,7 @@ class UserController {
          const baseUrl = `${req.protocol}://${req.get('host')}/api`
          return res.status(200).json({
             message: 'Usuário deletado com sucesso!',
-            _links: buildLinks(baseUrl, 'users')
+            _links: buildLinks(baseUrl, 'users', user.id, ['POST', 'GET'])
          })
       } catch (error) {
          res.status(500).json('Erro ao deletar usuário!', error.message)

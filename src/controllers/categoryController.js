@@ -17,7 +17,6 @@ class categoryController {
          return res.status(200).json({
             count: categories.length,
             items: result,
-            _links: buildLinks(baseUrl, 'categories')
          })
       } catch (error) {
          res.status(500).json({ error:'Erro ao listar todas as categorias!', message: error.message })
@@ -64,7 +63,7 @@ class categoryController {
          const baseUrl = `${req.protocol}://${req.get('host')}/api`
          return res.status(201).json({
             category,
-            _links: buildLinks(baseUrl, 'categories', category)
+            _links: buildLinks(baseUrl, 'categories', category.id)
          })
       } catch (error) {
          return res.status(500).json({ error: 'Erro ao criar categoria!', message: error.message })
@@ -124,7 +123,7 @@ class categoryController {
          const baseUrl = `${req.protocol}://${req.get('host')}/api`
          return res.status(200).json({
             message: 'Categoria deletada com sucesso!',
-            _links: buildLinks(baseUrl, 'categories')
+            _links: buildLinks(baseUrl, 'categories', category.id, ['POST', 'GET'])
          })
       } catch (error) {
          return res.status(500).json({ error: 'Erro ao deletar categoria!', message: error.message })

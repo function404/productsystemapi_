@@ -17,7 +17,6 @@ class productController {
          return res.status(200).json({
             count: products.length,
             items: result,
-            _links: buildLinks(baseUrl, 'products')
          })
       } catch (error) {
          res.status(500).json({ error:'Erro ao buscar todos os produtos!', message: error.message })
@@ -128,7 +127,7 @@ class productController {
          const baseUrl = `${req.protocol}://${req.get('host')}/api`
          return res.status(200).json({
             message: 'Produto deletado com sucesso!',
-            _links: buildLinks(baseUrl, 'products')
+            _links: buildLinks(baseUrl, 'products', product.id, ['POST', 'GET'])
          })
          } catch (error) {
          return res.status(500).json({ error:'Erro ao deletar o produto!', message: error.message })
