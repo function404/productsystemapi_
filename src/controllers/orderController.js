@@ -20,7 +20,7 @@ class orderController {
          // Aqui eu precisei sobrescrever o link pra garantir que a lista apareça /orders/user 
          // Mostrando que para obter todos os pedidos por usuário a url precisa ser /orders/user
          const result = orders.map(order => {
-            const links = buildLinks(baseUrl, 'orders', order.id)
+            const links = buildLinks(baseUrl, 'orders', order.id, ['GET', 'POST', 'DELETE'])
 
             links.list = {
                href: `${baseUrl}/orders/user`,
@@ -36,10 +36,6 @@ class orderController {
          return res.status(200).json({
             count: result.length,
             result,
-            _links: {
-               self: { href: `${baseUrl}/orders/user`, method: 'GET' },
-               create: { href: `${baseUrl}/orders`, method: 'POST' },
-            }
          })
       } catch (error) {
          res.status(500).json({ error:'Erro ao buscar todos os pedidos do usuário!', message: error.message })
@@ -70,7 +66,7 @@ class orderController {
          // Aqui fiz a mesma coisa, sobrescrevi o list pra orders/user tambem
          const baseUrl = `${req.protocol}://${req.get('host')}/api`
 
-         const links = buildLinks(baseUrl, 'orders', order.id)
+         const links = buildLinks(baseUrl, 'orders', order.id, ['GET', 'POST', 'DELETE'])
          links.list = {href: `${baseUrl}/order/user`, method: 'GET' }
 
          return res.status(200).json({
@@ -146,7 +142,7 @@ class orderController {
          // Aqui fiz a mesma coisa, sobrescrevi o list pra orders/user tambem
          const baseUrl = `${req.protocol}://${req.get('host')}/api`
 
-         const links = buildLinks(baseUrl, 'orders', order.id)
+         const links = buildLinks(baseUrl, 'orders', order.id, ['GET', 'POST', 'DELETE'])
          links.list = { href: `${baseUrl}/order/user`, method: 'GET' }
 
          return res.status(201).json({
@@ -192,7 +188,7 @@ class orderController {
          const baseUrl = `${req.protocol}://${req.get('host')}/api`
          return res.status(200).json({
             message: 'Pedido cancelado com sucesso!',
-            _links: buildLinks(baseUrl, 'orders')
+            _links: buildLinks(baseUrl, 'orders', order.id, ['GET', 'POST'])
          })
       } catch (error) {
          res.status(500).json({ error:'Erro ao cancelar o pedido!', message: error.message })
