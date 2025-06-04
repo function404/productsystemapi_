@@ -98,7 +98,7 @@ router.post('/register', registerMiddlewares.register)
  *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *       400:
  *         description: Usuário não encontrado ou dados ausentes
- *       401:
+ *       400:
  *         description: Senha inválida
  *       500:
  *         description: Erro ao fazer login

@@ -1,10 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const tokenMiddlewares = require('../middlewares/tokenMiddleware')
-
 const userController = require('../controllers/userController')
-router.use(tokenMiddlewares.validateToken)
 
 /**
  * @swagger

@@ -1,10 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const tokenMiddlewares = require('../middlewares/tokenMiddleware')
-
 const categoryController = require('../controllers/categoryController')
-router.use(tokenMiddlewares.validateToken)
 
 /**
  * @swagger
@@ -69,7 +66,7 @@ router.get('/categories', categoryController.getAllCategories)
  *                     type: integer
  *                   name:
  *                     type: string
- *       400:
+ *       404:
  *         description: ID inválido ou categoria não encontrada
  *       500:
  *         description: Erro ao buscar a categoria
@@ -112,6 +109,8 @@ router.get('/categories/:id', categoryController.getCategoriesById)
  *                     type: string
  *                     example: Eletrônicos
  *       400:
+ *         description: Valores obrigatórios name
+ *       409:
  *         description: Nome da categoria é obrigatório ou categoria já existe
  *       500:
  *         description: Erro ao criar categoria
@@ -161,9 +160,11 @@ router.post('/categories', categoryController.createCategories)
  *                     type: string
  *                     example: Processadores
  *       400:
- *         description: Nome inválido ou categoria já existe
+ *         description: Valores obrigatórios ID, name
  *       404:
  *         description: Categoria não encontrada
+ *       409:
+ *         description: Nome inválido ou categoria já existe
  *       500:
  *         description: Erro ao atualizar categoria
 */
@@ -193,6 +194,8 @@ router.put('/categories/:id', categoryController.updateCategories)
  *               type: string
  *               example: Categoria deletada com sucesso!
  *       400:
+ *         description: Valores obrigatórios ID
+ *       403:
  *         description: ID inválido ou categoria com produtos associados
  *       404:
  *         description: Categoria não encontrada

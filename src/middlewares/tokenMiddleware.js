@@ -1,6 +1,9 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
+const MissingValuesError = require('../errors/missingValuesError')
+const NotFoundError = require('../errors/notFoundError')
+
 class AuthToken {
    async validateToken(req, res, next) {
       const authHeader = req.headers.authorization

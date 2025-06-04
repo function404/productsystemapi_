@@ -4,7 +4,7 @@ Este é um projeto de **API RESTful robusta, modular e segura**,, utilizando a s
 
 O sistema foi projetado para refletir a estrutura de um backend de aplicação real, com foco em **organização de código, segurança, modularidade e facilidade de escalabilidade**.
 
-**Última Atualização:** 23 Mai. 2025
+**Última Atualização:** 04 Jun. 2025
 
 ---
 
@@ -31,7 +31,8 @@ productsystemapi_/
 │ ├── config/               # Configurações do projeto (DB, .env, etc.)
 │ ├── controllers/          # Lógica de controle de cada rota
 │ ├── docs/                 # Documentação Swagger
-│ ├── middlewares/          # Autenticação, erros, logs
+│ ├── errors/               # Erros, logs com mensagens e status
+│ ├── middlewares/          # Autenticação
 │ ├── models/               # Entidades do Sequelize (tabelas do banco) 
 │ ├── routes/               # Rotas da API agrupadas por módulo
 │ ├── utils/                # Links do hypermidia
