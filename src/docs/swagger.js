@@ -11,7 +11,7 @@ const options = {
       servers: [
          {
             url: 'http://localhost:3001',
-            description: 'Servidor local de desenvolvimento'
+            description: 'Servidor local'
          }
       ],
       security: [
