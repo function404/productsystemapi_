@@ -31,7 +31,8 @@ productsystemapi_/
 │ ├── config/               # Configurações do projeto (DB, .env, etc.)
 │ ├── controllers/          # Lógica de controle de cada rota
 │ ├── docs/                 # Documentação Swagger
-│ ├── middlewares/          # Autenticação, erros, logs
+│ ├── errors/               # Erros, logs com mensagens e status
+│ ├── middlewares/          # Autenticação
 │ ├── models/               # Entidades do Sequelize (tabelas do banco) 
 │ ├── routes/               # Rotas da API agrupadas por módulo
 │ ├── utils/                # Links do hypermidia
