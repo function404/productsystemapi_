@@ -47,7 +47,7 @@ const productController = require('../controllers/productController')
  *                     type: integer
  *                     example: 1
  *       500:
- *         description: Erro ao buscar produtos
+ *         description: Erro interno ao buscar produtos
 */
 router.get('/products', productController.getAllProducts)
 
@@ -91,7 +91,7 @@ router.get('/products', productController.getAllProducts)
  *       404:
  *         description: Produto não encontrado
  *       500:
- *         description: Erro ao buscar produto pelo ID
+ *         description: Erro interno ao buscar produto pelo ID
 */
 router.get('/products/:id', productController.getProductsById)
 
@@ -158,11 +158,13 @@ router.get('/products/:id', productController.getProductsById)
  *                   type: integer
  *                   example: 1
  *       400:
- *         description: Preencha todos os campos ou produto com esse nome já existe
+ *         description: Preencha campos obrigatórios
  *       404:
  *         description: ID da categoria não encontrada
+ *       409:
+ *         description: Produto com esse nome já existe
  *       500:
- *         description: Erro ao criar produto
+ *         description: Erro interno ao criar produto
 */
 router.post('/products', productController.createProducts)
 
@@ -230,11 +232,11 @@ router.post('/products', productController.createProducts)
  *                   type: integer
  *                   example: 1
  *       400:
- *         description: Preencha todos os campos
+ *         description: ID não informado, preencha campos obrigatórios
  *       404:
- *         description: Produto não encontrado ou ID da categoria não encontrada
+ *         description: Produto não encontrado, ID da categoria não encontrada
  *       500:
- *         description: Erro ao atualizar produto
+ *         description: Erro interno ao atualizar produto
 */
 router.put('/products/:id', productController.updateProducts)
 
@@ -266,7 +268,7 @@ router.put('/products/:id', productController.updateProducts)
  *       404:
  *         description: Produto não encontrado
  *       500:
- *         description: Erro ao deletar produto
+ *         description: Erro interno ao deletar produto
 */
 router.delete('/products/:id', productController.deleteProducts)
 

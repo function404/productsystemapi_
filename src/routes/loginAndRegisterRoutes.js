@@ -57,9 +57,11 @@ const loginMiddlewares = require('../middlewares/loginMiddleware')
  *                   type: string
  *                   example: $6f$32$...
  *       400:
- *         description: Preencher todos os campos ou email ja cadastrado
+ *         description: Preencher todos os campos obrigatórios
+ *       409:
+ *         description: Email já cadastrado
  *       500:
- *         description: Erro ao criar usuário
+ *         description: Erro interno ao criar usuário
 */
 router.post('/register', registerMiddlewares.register)
 
@@ -97,11 +99,11 @@ router.post('/register', registerMiddlewares.register)
  *                   type: string
  *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *       400:
- *         description: Usuário não encontrado ou dados ausentes
- *       400:
- *         description: Senha inválida
+ *         description: Preencha todos o campos obrigatórios, senha inválida
+ *       404:
+ *         description: Usuário não encontrado
  *       500:
- *         description: Erro ao fazer login
+ *         description: Erro interno ao fazer login
 */
 router.post('/login', loginMiddlewares.login)
 

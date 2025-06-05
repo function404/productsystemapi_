@@ -57,7 +57,7 @@ const orderController = require('../controllers/orderController')
  *                             quantity:
  *                               type: integer
  *       500:
- *         description: Erro ao buscar os pedidos do usuário
+ *         description: Erro interno ao buscar os pedidos do usuário
 */
 router.get('/orders/user', orderController.getOrderByUser)
 
@@ -113,11 +113,11 @@ router.get('/orders/user', orderController.getOrderByUser)
  *       400:
  *         description: ID do pedido não informado
  *       403:
- *         description: Usuário não autorizado para ver esse pedido
+ *         description: Usuário não permitido para ver pedido de outro usuário
  *       404:
  *         description: Pedido não encontrado
  *       500:
- *         description: Erro ao buscar o pedido pelo ID
+ *         description: Erro interno ao buscar o pedido pelo ID
 */
 router.get('/orders/:id', orderController.getOrdersById)
 
@@ -182,11 +182,13 @@ router.get('/orders/:id', orderController.getOrdersById)
  *                           quantity:
  *                             type: integer
  *       400:
- *         description: Enviar a lista de produtos e quantidade ou não enviar produtos repitidos ou estoque insuficiente para o produto com ID
+ *         description: Verifica campo "products", "products" deve ser uma lista (array), a lista (array) não pode estar vazia, a lista (array) deve ser um objeto com "productId" e "quantity" e quantidade indisponível do produto
  *       404:
- *         description: Usuário não encontrado ou Produto(s) não encontrado(s) com ID
+ *         description: Usuário não encontrado, Produto(s) não encontrado(s) com ID
+ *       409:
+ *         description: Não envie produtos repetidos
  *       500:
- *         description: Erro ao criar pedido
+ *         description: Erro inrterno ao criar pedido
 */
 router.post('/orders', orderController.createOrders)
 
@@ -216,11 +218,11 @@ router.post('/orders', orderController.createOrders)
  *       400:
  *         description: ID do pedido não informado
  *       403:
- *         description: Usuário não autorizado para deletar esse pedido
+ *         description: Usuário não permitido pode cancelar um pedido de outro usuário
  *       404:
  *         description: Pedido não encontrado
  *       500:
- *         description: Erro ao cancelar pedido
+ *         description: Erro interno ao cancelar pedido
 */
 router.delete('/orders/:id', orderController.cancelOrders)
 

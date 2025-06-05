@@ -1,5 +1,5 @@
 class ConflictError extends Error {
-   constructor(message = 'Registro já existe') {
+   constructor(message = 'Registro já existe!') {
       super(message);
       this.statusCode = 409;
    }

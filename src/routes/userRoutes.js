@@ -37,7 +37,7 @@ const userController = require('../controllers/userController')
  *                   password:
  *                     type: string
  *       500:
- *         description: Erro ao buscar usuários
+ *         description: Erro interno ao buscar usuários
 */
 router.get('/users', userController.getAllUsers)
 
@@ -77,7 +77,7 @@ router.get('/users', userController.getAllUsers)
  *       404:
  *         description: Usuário não encontrado
  *       500:
- *         description: Erro ao buscar usuário
+ *         description: Erro interno ao buscar usuário
 */
 router.get('/users/:id', userController.getUserById)
 
@@ -129,9 +129,11 @@ router.get('/users/:id', userController.getUserById)
  *                   type: string
  *                   example: $6f$32$...
  *       400:
- *         description: Preencher todos os campos ou email ja cadastrado
+ *         description: Preencha campos obrigatórios
+ *       409:
+ *         description: Email já cadastrado
  *       500:
- *         description: Erro ao criar usuário
+ *         description: Erro interno ao criar usuário
 */
 router.post('/users', userController.createUsers)
 
@@ -186,9 +188,11 @@ router.post('/users', userController.createUsers)
  *                   type: string
  *                   example: $6f$32$...
  *       400:
- *         description: ID do usuário não informado ou preencha todos os campos ou email já cadastrado
+ *         description: ID do usuário não informado, preencha campos obrigatórios
  *       404:
  *         description: Usuário não encontrado
+ *       409:
+ *         description: Email já cadastrado
  *       500:
  *         description: Erro ao atualizar usuário
 */
@@ -218,11 +222,13 @@ router.put('/users/:id', userController.updateUsers)
  *               type: string
  *               example: Usuário deletado com sucesso!
  *       400:
- *         description: ID do usuário não informado ou você não pode deletar sua própria conta
+ *         description: ID do usuário não informado 
+ *       403:
+ *         description: Este usuário possui pedidos ativos. Cancele-os antes de deletar a conta, você não pode deletar sua própria conta
  *       404:
  *         description: Usuário não encontrado
  *       500:
- *         description: Erro ao deletar usuário
+ *         description: Erro interno ao deletar usuário
 */
 router.delete('/users/:id', userController.deleteUsers)
 

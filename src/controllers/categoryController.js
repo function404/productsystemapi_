@@ -102,7 +102,7 @@ class categoryController {
 
       const product = await Product.findAll({ where: { categoryId: id }})
       if (product.length > 0) {
-         throw new ForbiddenError(`Categorias que contem produtos associados não podem ser excluídas!`)
+         throw new ForbiddenError(`Categorias com produtos associados não podem ser excluídas!`)
       }
 
       await category.destroy()

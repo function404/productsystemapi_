@@ -1,16 +1,14 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-const MissingValuesError = require('../errors/missingValuesError')
-const NotFoundError = require('../errors/notFoundError')
-
+const UnauthorizedError = require('../errors/unauthorizedError')
 class AuthToken {
    async validateToken(req, res, next) {
       const authHeader = req.headers.authorization
       const token = authHeader && authHeader.split(' ')[1]
    
       if (!token) {
-         return res.status(401).json('Token não enviado!')
+         throw new UnauthorizedError('Não autorizado! O token não foi enviado')
       }
    
       try {
@@ -18,7 +16,7 @@ class AuthToken {
          req.user = payload.id
          next()
       } catch (error) {
-         return res.status(401).json('Token inválido!', error)
+         throw new UnauthorizedError('Não autorizado! O token está inválido')
       }
    }
 }

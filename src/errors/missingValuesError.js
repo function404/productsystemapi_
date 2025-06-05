@@ -14,7 +14,7 @@ function makeMessage(object, message) {
 }
 
 class MissingValuesError extends Error {
-   constructor(object, message = 'Faltam valores obrigatórios.') {
+   constructor(object, message = 'Faltam valores obrigatórios!') {
       super(makeMessage(object, message))
       this.statusCode = 400
    }

@@ -33,7 +33,7 @@ const categoryController = require('../controllers/categoryController')
  *                   name:
  *                     type: string
  *       500:
- *         description: Erro ao listar as categorias
+ *         description: Erro interno ao listar as categorias
 */
 router.get('/categories', categoryController.getAllCategories)
 
@@ -66,10 +66,12 @@ router.get('/categories', categoryController.getAllCategories)
  *                     type: integer
  *                   name:
  *                     type: string
+ *       400:
+ *         description: ID do produto não informado
  *       404:
- *         description: ID inválido ou categoria não encontrada
+ *         description: Categoria não encontrada
  *       500:
- *         description: Erro ao buscar a categoria
+ *         description: Erro interno ao buscar a categoria
 */
 router.get('/categories/:id', categoryController.getCategoriesById)
 
@@ -109,11 +111,11 @@ router.get('/categories/:id', categoryController.getCategoriesById)
  *                     type: string
  *                     example: Eletrônicos
  *       400:
- *         description: Valores obrigatórios name
+ *         description: Preencha campos obrigatórios
  *       409:
- *         description: Nome da categoria é obrigatório ou categoria já existe
+ *         description: Nome da categoria já existe
  *       500:
- *         description: Erro ao criar categoria
+ *         description: Erro interno ao criar categoria
 */
 router.post('/categories', categoryController.createCategories)
 
@@ -160,13 +162,13 @@ router.post('/categories', categoryController.createCategories)
  *                     type: string
  *                     example: Processadores
  *       400:
- *         description: Valores obrigatórios ID, name
+ *         description: Preencha campos obrigatórios
  *       404:
  *         description: Categoria não encontrada
  *       409:
  *         description: Nome inválido ou categoria já existe
  *       500:
- *         description: Erro ao atualizar categoria
+ *         description: Erro interno ao atualizar categoria
 */
 router.put('/categories/:id', categoryController.updateCategories)
 
@@ -194,13 +196,13 @@ router.put('/categories/:id', categoryController.updateCategories)
  *               type: string
  *               example: Categoria deletada com sucesso!
  *       400:
- *         description: Valores obrigatórios ID
+ *         description: Preencha campos obrigatórios
  *       403:
- *         description: ID inválido ou categoria com produtos associados
+ *         description: Categorias com produtos associados não podem ser excluídas
  *       404:
  *         description: Categoria não encontrada
  *       500:
- *         description: Erro ao deletar categoria
+ *         description: Erro interno ao deletar categoria
 */
 router.delete('/categories/:id', categoryController.deleteCategories)
 
